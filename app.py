@@ -36,13 +36,15 @@ def fetch_ong_info():
          links.append(f"{NGO_BASE_URL}{row.find('a')['href']}")
       
    ngo_data = []
-   links = links[0:4]
+   links = links[0:8]
 
    for link in links:
       sleep(0.2)
       ngo_req = Request(link, headers={'User-Agent': 'Mozilla/5.0'})
-      ngo_page = urlopen(ngo_req).read()
-      ngo_soup = BeautifulSoup(ngo_page, 'html.parser')
+      ngo_page = urlopen(ngo_req)
+      if ngo_page.geturl() != link:
+         continue
+      ngo_soup = BeautifulSoup(ngo_page.read(), 'html.parser')
 
       name = ngo_soup.find('h1', attrs={'itemprop': 'name'}).text
       table = ngo_soup.find('table', attrs={'class': 'table'})
